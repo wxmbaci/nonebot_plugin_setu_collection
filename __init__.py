@@ -24,35 +24,35 @@ Bot_NICKNAME = list(nonebot.get_driver().config.nickname)
 
 Bot_NICKNAME = Bot_NICKNAME[0] if Bot_NICKNAME else "色图bot"
 
-hello = on_command("色图", aliases = {"涩图"}, rule = to_me(), priority = 50, block = True)
+heisi_group = nonebot.get_driver().config.heisi_group
+heisi_cd = nonebot.get_driver().config.heisi_cd
+cddir = dirname(__file__) + "/cd"
+his = on_command("his", aliases={".黑丝", ".丝袜"})
 
-@hello.handle()
+@his.handle()
 async def _(bot: Bot, event: MessageEvent):
-    msg = (
-        "发送【我要一张xx涩图】可获得一张随机色图。"
-        "群聊图片取自：\n"
-        "Jitsu：https://image.anosu.top/\n"
-        "MirlKoi API：https://iw233.cn/\n"
-        "私聊图片取自：\n"
-        "Lolicon API：https://api.lolicon.app/"
+    gid = str(event.group_id)
+    if gid not in heisi_group:
+        logger.info(f"群  {event.group_id} 未开通此功能，发送提示信息 ")
+        await bot.send(
+            event=event,
+            message="当前群未开通此功能"
         )
-    await hello.finish(msg)
-
-async def func(client,url):
-    resp = await client.get(url,headers={'Referer':'http://www.weibo.com/',})
-    if resp.status_code == 200:
-        return resp.content
-    else:
-        return None
-
-setu = on_regex("^(我?要|来).*[张份].+$", priority = 50, block = True)
-
-@setu.handle()
-async def _(bot: Bot, event: MessageEvent):
+        return
+    cd_time = open(cdtxt, "r").read()
+    cd_time = datetime.datetime.strptime(cd_time, "%Y-%m-%d %H:%M:%S.%f")
+    now = datetime.datetime.now()
+    if int(str((now - cd_time).seconds)) <= int(heisi_cd):
+        left = int(heisi_cd) - int(str((now - cd_time).seconds))
+        await bot.send(
+            event=event,
+            message="技能CD中，剩%d秒" % left
+        )
+        return
+    
     msg = ""
     cmd = event.get_plaintext()
-    N = re.sub(r'^我?要|^来|[张份].+$', '', cmd)
-    N = N if N else 1
+    N = 1
 
     try:
         N = int(N)
@@ -63,7 +63,7 @@ async def _(bot: Bot, event: MessageEvent):
             N = 0
 
     Tag = re.sub(r'^我?要|^来|.*[张份]', '', cmd)
-    Tag = Tag [:-2]if (Tag.endswith("涩图") or Tag.endswith("色图")) else Tag
+    Tag = Tag [:-2]if (Tag.endswith("黑丝") or Tag.endswith("白丝")) else Tag
 
     if Tag.startswith("r18"):
         Tag = Tag [3:]
