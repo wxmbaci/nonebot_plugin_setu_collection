@@ -40,8 +40,7 @@ setu = on_regex("^(我?要|来).*[张份].+$", priority = 50, block = True)
 
 @his.handle()
 async def _(bot: Bot, event: MessageEvent):
-    
-
+    TAG ='黑丝'
 
     if isinstance(event,GroupMessageEvent):
         gid = str(event.group_id)
