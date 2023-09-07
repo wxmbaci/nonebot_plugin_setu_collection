@@ -34,7 +34,7 @@ heisi_group = nonebot.get_driver().config.heisi_group
 heisi_cd = nonebot.get_driver().config.heisi_cd
 cddir = dirname(__file__) + "/cd"
 his = on_command("his", aliases={"黑丝", "丝袜"})
-setu = on_regex("^(我?要|来).*[张份].+$", priority = 4, block = True)
+setuhis = on_regex("^(我?要|来).*[张份].+$", priority = 4, block = True)
 
 
 
@@ -129,7 +129,7 @@ async def _(bot: Bot, event: MessageEvent):
         msg += "获取图片失败。"
         await bot.send(event=event,message=msg, at_sender = True)
 
-@setu.handle()
+@setuhis.handle()
 async def _(bot: Bot, event: MessageEvent):
     
     msg = ""
@@ -187,7 +187,7 @@ async def _(bot: Bot, event: MessageEvent):
             )
             return
         if R18:
-            await setu.finish("涩涩是禁止事项！！")
+            await setuhis.finish("涩涩是禁止事项！！")
         else:
             if not Tag:
                 msg,url_list = MirlKoi(N,Tag,R18)
@@ -227,7 +227,7 @@ async def _(bot: Bot, event: MessageEvent):
 
     if len(url_list) >3:
         msg = msg[:-1]
-        await setu.send(msg, at_sender = True)
+        await setuhis.send(msg, at_sender = True)
 
     async with httpx.AsyncClient() as client:
         task_list = []
@@ -244,7 +244,7 @@ async def _(bot: Bot, event: MessageEvent):
             image = Message()
             for i in range(N):
                 image +=  MessageSegment.image(file = image_list[i])
-            await setu.finish(Message(msg) + image, at_sender = True)
+            await setuhis.finish(Message(msg) + image, at_sender = True)
         else:
             msg_list =[]
             for i in range(N):
@@ -268,7 +268,7 @@ async def _(bot: Bot, event: MessageEvent):
                 return
     else:
         msg += "获取图片失败。"
-        await setu.finish(msg, at_sender = True)
+        await setuhis.finish(msg, at_sender = True)
 
 async def func(client,url):
     resp = await client.get(url,headers={'Referer':'http://www.weibo.com/',})
