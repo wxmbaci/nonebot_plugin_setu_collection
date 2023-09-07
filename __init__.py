@@ -173,6 +173,13 @@ async def _(bot: Bot, event: MessageEvent):
         msg += "获取图片失败。"
         await setu.finish(msg, at_sender = True)
 
+async def func(client,url):
+    resp = await client.get(url,headers={'Referer':'http://www.weibo.com/',})
+    if resp.status_code == 200:
+        return resp.content
+    else:
+        return None
+        
 set_api = on_command("设置api", aliases = {"切换api","指定api"}, priority = 50, block = True)
 
 @set_api.got(
