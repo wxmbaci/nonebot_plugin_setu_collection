@@ -34,7 +34,7 @@ heisi_group = nonebot.get_driver().config.heisi_group
 heisi_cd = nonebot.get_driver().config.heisi_cd
 cddir = dirname(__file__) + "/cd"
 his = on_command("his", aliases={"黑丝", "丝袜"})
-setuhis = on_regex("^(我?要|来).*[张份].+$", priority = 4, block = True)
+setuhis = on_regex("^(我?要|来).*[张份].+$", priority = 5, block = True)
 
 
 
@@ -118,9 +118,9 @@ async def _(bot: Bot, event: MessageEvent):
                     )
             try:
                 if isinstance(event,GroupMessageEvent):
-                        await bot.send_group_forward_msg(group_id = event.group_id, messages = msg_list)
+                    await bot.send_group_forward_msg(group_id = event.group_id, messages = msg_list)
                 else:
-                        await bot.send_private_forward_msg(user_id = event.user_id, messages = msg_list)
+                    await bot.send_private_forward_msg(user_id = event.user_id, messages = msg_list)
             except Exception:
                 await bot.send("hso (发不出")
                 return
@@ -260,9 +260,9 @@ async def _(bot: Bot, event: MessageEvent):
                     )
             try:
                 if isinstance(event,GroupMessageEvent):
-                        await bot.send_group_forward_msg(group_id = event.group_id, messages = msg_list)
-                    else:
-                        await bot.send_private_forward_msg(user_id = event.user_id, messages = msg_list)
+                    await bot.send_group_forward_msg(group_id = event.group_id, messages = msg_list)
+                else:
+                    await bot.send_private_forward_msg(user_id = event.user_id, messages = msg_list)
             except Exception:
                 await bot.send("hso (发不出")
                 return
