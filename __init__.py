@@ -33,7 +33,7 @@ Bot_NICKNAME = Bot_NICKNAME[0] if Bot_NICKNAME else "色图bot"
 heisi_group = nonebot.get_driver().config.heisi_group
 heisi_cd = nonebot.get_driver().config.heisi_cd
 cddir = dirname(__file__) + "/cd"
-his = on_command("his", aliases={".黑丝", ".丝袜"})
+his = on_command("his", aliases={"黑丝", "丝袜"})
 setu = on_regex("^(我?要|来).*[张份].+$", priority = 50, block = True)
 
 
@@ -75,7 +75,7 @@ async def _(bot: Bot, event: MessageEvent):
                 message="技能CD中，剩%d秒" % left
             )
             return
-    msg,url_list = Lolicon(1,Tag,R18)
+    msg,url_list = Lolicon(1,Tag,1)
     api = "Jitsu"
         
 
