@@ -94,7 +94,7 @@ async def _(bot: Bot, event: MessageEvent):
             )
             return
         if R18:
-            await setu.finish("涩涩是禁止事项！！")
+            await his.finish("涩涩是禁止事项！！")
         else:
             if not Tag:
                 msg,url_list = MirlKoi(N,Tag,R18)
@@ -134,7 +134,7 @@ async def _(bot: Bot, event: MessageEvent):
 
     if len(url_list) >3:
         msg = msg[:-1]
-        await setu.send(msg, at_sender = True)
+        await his.send(msg, at_sender = True)
 
     async with httpx.AsyncClient() as client:
         task_list = []
@@ -151,7 +151,7 @@ async def _(bot: Bot, event: MessageEvent):
             image = Message()
             for i in range(N):
                 image +=  MessageSegment.image(file = image_list[i])
-            await setu.finish(Message(msg) + image, at_sender = True)
+            await his.finish(Message(msg) + image, at_sender = True)
         else:
             msg_list =[]
             for i in range(N):
@@ -171,7 +171,7 @@ async def _(bot: Bot, event: MessageEvent):
                 await bot.send_private_forward_msg(user_id = event.user_id, messages = msg_list)
     else:
         msg += "获取图片失败。"
-        await setu.finish(msg, at_sender = True)
+        await his.finish(msg, at_sender = True)
 
 async def func(client,url):
     resp = await client.get(url,headers={'Referer':'http://www.weibo.com/',})
@@ -179,7 +179,7 @@ async def func(client,url):
         return resp.content
     else:
         return None
-        
+
 set_api = on_command("设置api", aliases = {"切换api","指定api"}, priority = 50, block = True)
 
 @set_api.got(
