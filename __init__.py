@@ -116,10 +116,15 @@ async def _(bot: Bot, event: MessageEvent):
                             }
                         }
                     )
-            if isinstance(event,GroupMessageEvent):
-                await bot.send_group_forward_msg(group_id = event.group_id, messages = msg_list)
-            else:
-                await bot.send_private_forward_msg(user_id = event.user_id, messages = msg_list)
+            try:
+                if isinstance(event,GroupMessageEvent):
+                        await bot.send_group_forward_msg(group_id = event.group_id, messages = msg_list)
+                    else:
+                        await bot.send_private_forward_msg(user_id = event.user_id, messages = msg_list)
+            except Exception:
+                await bot.send("hso (发不出")
+                return
+            
     else:
         msg += "获取图片失败。"
         await bot.send(event=event,message=msg, at_sender = True)
@@ -253,10 +258,14 @@ async def _(bot: Bot, event: MessageEvent):
                             }
                         }
                     )
-            if isinstance(event,GroupMessageEvent):
-                await bot.send_group_forward_msg(group_id = event.group_id, messages = msg_list)
-            else:
-                await bot.send_private_forward_msg(user_id = event.user_id, messages = msg_list)
+            try:
+                if isinstance(event,GroupMessageEvent):
+                        await bot.send_group_forward_msg(group_id = event.group_id, messages = msg_list)
+                    else:
+                        await bot.send_private_forward_msg(user_id = event.user_id, messages = msg_list)
+            except Exception:
+                await bot.send("hso (发不出")
+                return
     else:
         msg += "获取图片失败。"
         await setu.finish(msg, at_sender = True)
