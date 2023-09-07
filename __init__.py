@@ -119,7 +119,7 @@ async def _(bot: Bot, event: MessageEvent):
             try:
                 if isinstance(event,GroupMessageEvent):
                         await bot.send_group_forward_msg(group_id = event.group_id, messages = msg_list)
-                    else:
+                else:
                         await bot.send_private_forward_msg(user_id = event.user_id, messages = msg_list)
             except Exception:
                 await bot.send("hso (发不出")
