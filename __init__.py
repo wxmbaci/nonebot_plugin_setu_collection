@@ -102,7 +102,11 @@ async def _(bot: Bot, event: MessageEvent):
             image = Message()
             for i in range(N):
                 image +=  MessageSegment.image(file = image_list[i])
-            await bot.send(event=event,message=Message(msg) + image, at_sender = True)
+            try:    
+                await bot.send(event=event,message=Message(msg) + image, at_sender = True)
+            except Exception:
+                await bot.send("hso (发不出")
+                return
         else:
             msg_list =[]
             for i in range(N):
