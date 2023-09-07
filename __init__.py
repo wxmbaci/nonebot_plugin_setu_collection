@@ -31,24 +31,7 @@ his = on_command("his", aliases={".黑丝", ".丝袜"})
 
 @his.handle()
 async def _(bot: Bot, event: MessageEvent):
-    gid = str(event.group_id)
-    if gid not in heisi_group:
-        logger.info(f"群  {event.group_id} 未开通此功能，发送提示信息 ")
-        await bot.send(
-            event=event,
-            message="当前群未开通此功能"
-        )
-        return
-    cd_time = open(cdtxt, "r").read()
-    cd_time = datetime.datetime.strptime(cd_time, "%Y-%m-%d %H:%M:%S.%f")
-    now = datetime.datetime.now()
-    if int(str((now - cd_time).seconds)) <= int(heisi_cd):
-        left = int(heisi_cd) - int(str((now - cd_time).seconds))
-        await bot.send(
-            event=event,
-            message="技能CD中，剩%d秒" % left
-        )
-        return
+    
     
     msg = ""
     cmd = event.get_plaintext()
@@ -72,6 +55,27 @@ async def _(bot: Bot, event: MessageEvent):
         R18 = 0
 
     if isinstance(event,GroupMessageEvent):
+        gid = str(event.group_id)
+        if gid not in heisi_group:
+            logger.info(f"群  {event.group_id} 未开通此功能，发送提示信息 ")
+            await bot.send(
+                event=event,
+                message="当前群未开通此功能"
+            )
+            return
+        cdtxt = cddir + "/" + gid + "cd.txt"
+        if not os.path.exists(cddir):
+            os.mkdir(cddir)
+        cd_time = open(cdtxt, "r").read()
+        cd_time = datetime.datetime.strptime(cd_time, "%Y-%m-%d %H:%M:%S.%f")
+        now = datetime.datetime.now()
+        if int(str((now - cd_time).seconds)) <= int(heisi_cd):
+            left = int(heisi_cd) - int(str((now - cd_time).seconds))
+            await bot.send(
+                event=event,
+                message="技能CD中，剩%d秒" % left
+            )
+            return
         if R18:
             await setu.finish("涩涩是禁止事项！！")
         else:
