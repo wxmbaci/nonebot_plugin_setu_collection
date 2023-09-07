@@ -34,10 +34,99 @@ heisi_group = nonebot.get_driver().config.heisi_group
 heisi_cd = nonebot.get_driver().config.heisi_cd
 cddir = dirname(__file__) + "/cd"
 his = on_command("his", aliases={".黑丝", ".丝袜"})
+setu = on_regex("^(我?要|来).*[张份].+$", priority = 50, block = True)
+
+
 
 @his.handle()
 async def _(bot: Bot, event: MessageEvent):
     
+
+
+    if isinstance(event,GroupMessageEvent):
+        gid = str(event.group_id)
+        if gid not in heisi_group:
+            logger.info(f"群  {event.group_id} 未开通此功能，发送提示信息 ")
+            await bot.send(
+                event=event,
+                message="当前群未开通此功能"
+            )
+            return
+        cdtxt = cddir + "/" + gid + "cd.txt"
+        if not os.path.exists(cddir):
+            os.mkdir(cddir)
+        if not os.path.exists(cdtxt):
+            with open(cdtxt, "w") as cd:
+                time_now = datetime.datetime.now()
+                cd.write(str(time_now))
+                cd.close()
+                logger.info("初始化成功")
+                await bot.send(
+                    event=event,
+                    message="初始化成功，当前群已开通此功能，请再发一次命令开始使用"
+                )
+                return 
+        cd_time = open(cdtxt, "r").read()
+        cd_time = datetime.datetime.strptime(cd_time, "%Y-%m-%d %H:%M:%S.%f")
+        now = datetime.datetime.now()
+        if int(str((now - cd_time).seconds)) <= int(heisi_cd):
+            left = int(heisi_cd) - int(str((now - cd_time).seconds))
+            await bot.send(
+                event=event,
+                message="技能CD中，剩%d秒" % left
+            )
+            return
+    msg,url_list = Anosu(1,Tag,R18)
+    api = "Jitsu"
+        
+
+    msg = msg.replace("Bot_NICKNAME",Bot_NICKNAME)
+
+    msg += f"\n图片取自：{api}\n"
+
+    if len(url_list) >3:
+        msg = msg[:-1]
+        await bot.send(event=event,message=msg, at_sender = True)
+
+    async with httpx.AsyncClient() as client:
+        task_list = []
+        for url in url_list:
+            task = asyncio.create_task(func(client,url))
+            task_list.append(task)
+        image_list = await asyncio.gather(*task_list)
+
+    image_list = [image for image in image_list if image]
+
+    if image_list:
+        N = len(image_list)
+        if N <= 3:
+            image = Message()
+            for i in range(N):
+                image +=  MessageSegment.image(file = image_list[i])
+            await bot.send(event=event,message=Message(msg) + image, at_sender = True)
+        else:
+            msg_list =[]
+            for i in range(N):
+                msg_list.append(
+                    {
+                        "type": "node",
+                        "data": {
+                            "name": Bot_NICKNAME,
+                            "uin": event.self_id,
+                            "content": MessageSegment.image(file = image_list[i])
+                            }
+                        }
+                    )
+            if isinstance(event,GroupMessageEvent):
+                await bot.send_group_forward_msg(group_id = event.group_id, messages = msg_list)
+            else:
+                await bot.send_private_forward_msg(user_id = event.user_id, messages = msg_list)
+    else:
+        msg += "获取图片失败。"
+        await bot.send(event=event,message=msg, at_sender = True)
+
+@setu.handle()
+async def _(bot: Bot, event: MessageEvent):
     
     msg = ""
     cmd = event.get_plaintext()
@@ -52,7 +141,7 @@ async def _(bot: Bot, event: MessageEvent):
             N = 0
 
     Tag = re.sub(r'^我?要|^来|.*[张份]', '', cmd)
-    Tag = Tag [:-2]if (Tag.endswith("黑丝") or Tag.endswith("白丝")) else Tag
+    Tag = Tag [:-2]if (Tag.endswith("涩图") or Tag.endswith("色图")) else Tag
 
     if Tag.startswith("r18"):
         Tag = Tag [3:]
@@ -94,7 +183,7 @@ async def _(bot: Bot, event: MessageEvent):
             )
             return
         if R18:
-            await his.finish("涩涩是禁止事项！！")
+            await setu.finish("涩涩是禁止事项！！")
         else:
             if not Tag:
                 msg,url_list = MirlKoi(N,Tag,R18)
@@ -134,7 +223,7 @@ async def _(bot: Bot, event: MessageEvent):
 
     if len(url_list) >3:
         msg = msg[:-1]
-        await his.send(msg, at_sender = True)
+        await setu.send(msg, at_sender = True)
 
     async with httpx.AsyncClient() as client:
         task_list = []
@@ -151,7 +240,7 @@ async def _(bot: Bot, event: MessageEvent):
             image = Message()
             for i in range(N):
                 image +=  MessageSegment.image(file = image_list[i])
-            await his.finish(Message(msg) + image, at_sender = True)
+            await setu.finish(Message(msg) + image, at_sender = True)
         else:
             msg_list =[]
             for i in range(N):
@@ -171,7 +260,7 @@ async def _(bot: Bot, event: MessageEvent):
                 await bot.send_private_forward_msg(user_id = event.user_id, messages = msg_list)
     else:
         msg += "获取图片失败。"
-        await his.finish(msg, at_sender = True)
+        await setu.finish(msg, at_sender = True)
 
 async def func(client,url):
     resp = await client.get(url,headers={'Referer':'http://www.weibo.com/',})
