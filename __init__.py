@@ -71,6 +71,17 @@ async def _(bot: Bot, event: MessageEvent):
         cdtxt = cddir + "/" + gid + "cd.txt"
         if not os.path.exists(cddir):
             os.mkdir(cddir)
+        if not os.path.exists(cdtxt):
+            with open(cdtxt, "w") as cd:
+                time_now = datetime.datetime.now()
+                cd.write(str(time_now))
+                cd.close()
+                logger.info("初始化成功")
+                await bot.send(
+                    event=event,
+                    message="初始化成功，当前群已开通此功能，请再发一次命令开始使用"
+                )
+                return 
         cd_time = open(cdtxt, "r").read()
         cd_time = datetime.datetime.strptime(cd_time, "%Y-%m-%d %H:%M:%S.%f")
         now = datetime.datetime.now()
