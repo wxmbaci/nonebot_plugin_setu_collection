@@ -34,7 +34,7 @@ heisi_group = nonebot.get_driver().config.heisi_group
 heisi_cd = nonebot.get_driver().config.heisi_cd
 cddir = dirname(__file__) + "/cd"
 his = on_command("his", aliases={"黑丝", "丝袜"})
-setu = on_regex("^(我?要|来).*[张份].+$", priority = 50, block = True)
+setu = on_regex("^(我?要|来).*[张份].+$", priority = 4, block = True)
 
 
 
