@@ -75,7 +75,7 @@ async def _(bot: Bot, event: MessageEvent):
                 message="技能CD中，剩%d秒" % left
             )
             return
-    msg,url_list = Anosu(1,Tag,R18)
+    msg,url_list = Lolicon(1,Tag,R18)
     api = "Jitsu"
         
 
