@@ -15,6 +15,7 @@ import re
 import httpx
 import asyncio
 import unicodedata
+from os.path import dirname
 
 from .utils import customer_api,save
 
